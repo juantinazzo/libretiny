@@ -83,13 +83,13 @@ int16_t WiFiClass::scanNetworks(bool async, bool showHidden, bool passive, uint3
 	LT_HEAP_I();
 
 	scan->running = true;
-	scan->timeout = millis() + maxMsPerChannel * 20 + 1000;
+	scan->timeout = millis() + maxMsPerChannel * channel + 1000;
 
 	int16_t ret = WIFI_SCAN_RUNNING;
 	if (!async) {
 		LT_IM(WIFI, "Waiting for results");
 		xSemaphoreTake(DATA->scanSem, 1); // reset the semaphore quickly
-		xSemaphoreTake(DATA->scanSem, pdMS_TO_TICKS(maxMsPerChannel * 20));
+		xSemaphoreTake(DATA->scanSem, pdMS_TO_TICKS(maxMsPerChannel * channel));
 		if (scan->running) {
 			scanDelete();
 			ret = WIFI_SCAN_FAILED;
